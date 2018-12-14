@@ -1,2 +1,4 @@
 # Trivia
-https://stackoverflow.com/questions/2918920/decode-html-entities-in-android
+App with trivia questions and a list of highscores.
+
+
