@@ -4,9 +4,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class HighScoreActivity extends AppCompatActivity implements HighScoreRequest.Callback {
     private ListView listView;
@@ -26,6 +27,14 @@ public class HighScoreActivity extends AppCompatActivity implements HighScoreReq
 
     @Override
     public void gotHighScores(ArrayList<HighScore> highScores) {
+        // sort list by score rank
+        Collections.sort(highScores, new Comparator<HighScore>() {
+            @Override
+            public int compare(HighScore o1, HighScore o2) {
+                return o2.getScore() - o1.getScore() ;
+            }
+        });
+        
         // set adapter
         listView.setAdapter(new HighscoreAdapter(this, 0, highScores));
     }

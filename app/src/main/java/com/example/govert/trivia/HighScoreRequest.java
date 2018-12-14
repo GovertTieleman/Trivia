@@ -5,7 +5,7 @@ import android.content.Context;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
@@ -14,7 +14,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class HighScoreRequest implements Response.Listener<JSONObject>, Response.ErrorListener {
+public class HighScoreRequest implements Response.Listener<JSONArray>, Response.ErrorListener {
     private Context context;
     private Callback activity;
 
@@ -34,9 +34,12 @@ public class HighScoreRequest implements Response.Listener<JSONObject>, Response
         // create RequestQueue
         RequestQueue queue = Volley.newRequestQueue(context);
 
+        // url string
+        final String url = "https://ide50-ertzor.cs50.io:8080/highscores";
+
         // create JSONObjectRequest
-        queue.add(new JsonObjectRequest("https://ide50-ertzor.cs50.io:8080/highscores",
-                null, this, this));
+        queue.add(new JsonArrayRequest(url,
+                this, this));
     }
 
     @Override
@@ -45,18 +48,15 @@ public class HighScoreRequest implements Response.Listener<JSONObject>, Response
     }
 
     @Override
-    public void onResponse(JSONObject response) {
+    public void onResponse(JSONArray response) {
         try {
-            // get JSONArray
-            JSONArray array  = new JSONArray(response);
-
             // initialize ArrayList of highScores
             ArrayList<HighScore> highScores = new ArrayList<>();
 
             // iterate over questions, adding them to the ArrayList
-            for (int i = 0; i < array.length(); i++) {
+            for (int i = 0; i < response.length(); i++) {
                 // get object
-                JSONObject object = array.getJSONObject(i);
+                JSONObject object = response.getJSONObject(i);
 
                 // get values
                 String nickName = object.getString("nickname");

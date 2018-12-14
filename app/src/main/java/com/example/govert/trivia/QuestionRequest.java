@@ -1,6 +1,7 @@
 package com.example.govert.trivia;
 
 import android.content.Context;
+import android.text.Html;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -67,11 +68,18 @@ public class QuestionRequest implements Response.Listener<JSONObject>, Response.
                 String correct = object.getString("correct_answer");
                 JSONArray jsonArray = (JSONArray) object.get("incorrect_answers");
 
+                // unescape html strings
+                question = Html.fromHtml(question, Html.FROM_HTML_MODE_LEGACY).toString();
+                correct = Html.fromHtml(correct, Html.FROM_HTML_MODE_LEGACY).toString();
+
                 // make list of incorrect answers
                 List<String> incorrect = new ArrayList<>();
-
                 for (int j = 0; j < jsonArray.length(); j++) {
-                    incorrect.add(jsonArray.getString(j));
+                    // unescape
+                    String item = Html.fromHtml(jsonArray.getString(j),
+                            Html.FROM_HTML_MODE_LEGACY).toString();
+                    // add to list
+                    incorrect.add(item);
                 }
 
                 // add to questions

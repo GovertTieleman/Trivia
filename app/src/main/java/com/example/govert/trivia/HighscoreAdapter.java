@@ -7,8 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class HighscoreAdapter extends ArrayAdapter<HighScore> {
@@ -27,17 +25,12 @@ public class HighscoreAdapter extends ArrayAdapter<HighScore> {
             listItem = LayoutInflater.from(getContext()).inflate(R.layout.highscore_row, parent,
                     false);
         }
-
         // get currentItem
         HighScore currentItem = highScores.get(position);
 
         // set ranking for item
-        Collections.sort(highScores, new Comparator<HighScore>() {
-            @Override
-            public int compare(HighScore o1, HighScore o2) {
-                return o1.getScore() - o2.getScore();
-            }
-        });
+        TextView rankingTextView = (TextView) listItem.findViewById(R.id.rankingTextView);
+        rankingTextView.setText(Integer.toString(position + 1));
 
         // set nickName for item
         TextView nickNameTextView = (TextView) listItem.findViewById(R.id.nickNameTextView);
@@ -45,7 +38,7 @@ public class HighscoreAdapter extends ArrayAdapter<HighScore> {
 
         // set score for item
         TextView scoreTextView = (TextView) listItem.findViewById(R.id.scoreTextView);
-        scoreTextView.setText(currentItem.getScore());
+        scoreTextView.setText(currentItem.getScore().toString());
 
         return listItem;
     }
