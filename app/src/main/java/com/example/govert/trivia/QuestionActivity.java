@@ -67,49 +67,7 @@ public class QuestionActivity extends AppCompatActivity implements QuestionReque
     public void submitClicked(View view) {
         // check if last question
         if (questionNumber == 9) {
-            // put HighScore in database
-            String url = "https://ide50-ertzor.cs50.io:8080/highscores";
-            RequestQueue qeueu = Volley.newRequestQueue(this);
-            HighScorePostRequest request = new HighScorePostRequest(Request.Method.POST, url, new HighScore(nickName, score), this);
-            qeueu.add(request);
-            Toast.makeText(this, "Storing HighScore in Database...", Toast.LENGTH_LONG).show();
-
-
-            // congratulate player
-            numberTV.setText("Game finished!");
-
-            // tell the player how they performed
-            if (questionsCorrect < 3) {
-                String congratulations = String.format(Locale.getDefault(), "Better luck " +
-                                "next time, %s",
-                        nickName);
-                categoryTV.setText(congratulations);
-            }
-            else if (questionsCorrect < 7) {
-                String congratulations = String.format(Locale.getDefault(), "Not bad, %s",
-                        nickName);
-                categoryTV.setText(congratulations);
-            }
-            else if (questionsCorrect <= 9) {
-                String congratulations = String.format(Locale.getDefault(), "Great job, %s!",
-                        nickName);
-                categoryTV.setText(congratulations);
-            }
-            else {
-                String congratulations = String.format(Locale.getDefault(), "PERFECTION, " +
-                                "%s!", nickName);
-                categoryTV.setText(congratulations);
-            }
-
-            // show score
-            String scoreString = String.format(Locale.getDefault(),
-                    "You had %d/10 questions right for a score of %d!", questionsCorrect, score);
-            questionTV.setText(scoreString);
-
-            // show questions and their answers
-            radioGroup.setVisibility(View.INVISIBLE);
-            listView.setVisibility(View.VISIBLE);
-            findViewById(R.id.submitButton).setVisibility(View.INVISIBLE);
+            endOfGame();
         }
         // if no answer, request answer
         else if (selectedAnswer == null) {
@@ -149,45 +107,6 @@ public class QuestionActivity extends AppCompatActivity implements QuestionReque
         }
     }
 
-    @Override
-    public void onErrorResponse(VolleyError error) {
-        Toast.makeText(this, "Couldn't save HighScore at this time", Toast.LENGTH_LONG).show();
-    }
-
-    private class OnCheckedChangeListener implements RadioGroup.OnCheckedChangeListener {
-        @Override
-        public void onCheckedChanged(RadioGroup group, int checkedId) {
-            switch (checkedId) {
-                case R.id.radioButton1:
-                    selectedAnswer = radioButton1.getText().toString();
-                    break;
-                case R.id.radioButton2:
-                    selectedAnswer = radioButton2.getText().toString();
-                    break;
-                case R.id.radioButton3:
-                    selectedAnswer = radioButton3.getText().toString();
-                    break;
-                case R.id.radioButton4:
-                    selectedAnswer = radioButton4.getText().toString();
-                    break;
-            }
-        }
-    }
-
-    @Override
-    public void gotQuestions(ArrayList<Question> questions) {
-        // get questions
-        this.questions = questions;
-
-        // call newQuestion
-        newQuestion(questionNumber);
-    }
-
-    @Override
-    public void gotQuestionsError(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-    }
-
     public void newQuestion(Integer number) {
         // reset selectedAnswer
         radioGroup.clearCheck();
@@ -225,6 +144,91 @@ public class QuestionActivity extends AppCompatActivity implements QuestionReque
             radioButton1.setVisibility(View.INVISIBLE);
             radioButton4.setVisibility(View.INVISIBLE);
         }
+    }
+
+    public void endOfGame() {
+        // put HighScore in database
+        String url = "https://ide50-ertzor.cs50.io:8080/highscores";
+        RequestQueue qeueu = Volley.newRequestQueue(this);
+        HighScorePostRequest request = new HighScorePostRequest(Request.Method.POST, url, new HighScore(nickName, score), this);
+        qeueu.add(request);
+        Toast.makeText(this, "Storing HighScore in Database...", Toast.LENGTH_LONG).show();
+
+
+        // congratulate player
+        numberTV.setText("Game finished!");
+
+        // tell the player how they performed
+        if (questionsCorrect < 3) {
+            String congratulations = String.format(Locale.getDefault(), "Better luck " +
+                            "next time, %s",
+                    nickName);
+            categoryTV.setText(congratulations);
+        }
+        else if (questionsCorrect < 7) {
+            String congratulations = String.format(Locale.getDefault(), "Not bad, %s",
+                    nickName);
+            categoryTV.setText(congratulations);
+        }
+        else if (questionsCorrect <= 9) {
+            String congratulations = String.format(Locale.getDefault(), "Great job, %s!",
+                    nickName);
+            categoryTV.setText(congratulations);
+        }
+        else {
+            String congratulations = String.format(Locale.getDefault(), "PERFECTION, " +
+                    "%s!", nickName);
+            categoryTV.setText(congratulations);
+        }
+
+        // show score
+        String scoreString = String.format(Locale.getDefault(),
+                "You had %d/10 questions right for a score of %d!", questionsCorrect, score);
+        questionTV.setText(scoreString);
+
+        // show questions and their answers
+        radioGroup.setVisibility(View.INVISIBLE);
+        listView.setVisibility(View.VISIBLE);
+        findViewById(R.id.submitButton).setVisibility(View.INVISIBLE);
+    }
+
+    private class OnCheckedChangeListener implements RadioGroup.OnCheckedChangeListener {
+        @Override
+        public void onCheckedChanged(RadioGroup group, int checkedId) {
+            switch (checkedId) {
+                case R.id.radioButton1:
+                    selectedAnswer = radioButton1.getText().toString();
+                    break;
+                case R.id.radioButton2:
+                    selectedAnswer = radioButton2.getText().toString();
+                    break;
+                case R.id.radioButton3:
+                    selectedAnswer = radioButton3.getText().toString();
+                    break;
+                case R.id.radioButton4:
+                    selectedAnswer = radioButton4.getText().toString();
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void gotQuestions(ArrayList<Question> questions) {
+        // get questions
+        this.questions = questions;
+
+        // call newQuestion
+        newQuestion(questionNumber);
+    }
+
+    @Override
+    public void gotQuestionsError(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onErrorResponse(VolleyError error) {
+        Toast.makeText(this, "Couldn't save HighScore at this time", Toast.LENGTH_LONG).show();
     }
 
     @Override
