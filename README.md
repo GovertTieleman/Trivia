@@ -1,6 +1,11 @@
 # Trivia
-App with trivia questions and a list of highscores.
+App with trivia questions and a list of highscores. 
 
+The user is congratulated with a custom message, based on their performance.
+
+Highscores are ranked from highest score to lowest score.
+
+HTML text is unescaped
 
 ![Alt text](/Main.jpg?raw=true "Portrait")
 ![Alt text](/Question.jpg?raw=true "Portrait")
